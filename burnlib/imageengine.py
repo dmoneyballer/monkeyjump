@@ -75,17 +75,21 @@ class Graphics(object):
             self.buffer = pygame.Surface(self.RES)
 
         pygame.display.set_caption("Loading...")
+        print('we are loading now')
 
         # A function
         self.quickpixel = self.buffer.set_at
-
+        print(self.quickpixel)
         # Load images
         self.board = pygame.image.load(addpath(os.path.join(SPECIFIC_THEMEDIR, "board.png")))
+        print(self.board)
         w, h = self.buffer.get_size()
+        print('w', w, 'h', h)
         self.board = pygame.transform.scale(self.board, (w, h))
         # not perfect, not based on anythin other than hunch, but it sortof works
         margin = 27 + int(19 + BOARD * -1.8)
         self.margin = margin
+        print(self.margin)
         # calculate the bottom/right margin
         leftover = w - (((BOARD - 1) * (w / float(BOARD)) + margin) - margin)
         botmargin = leftover - margin
@@ -93,6 +97,7 @@ class Graphics(object):
         xspace = w / float(BOARD)
         # one xnum per vertical line
         for xnum in range(BOARD):
+            print(xnum, 'xnum')
             x = int(xnum * xspace) + margin
             pygame.draw.line(self.board, (0, 0, 0), (x, margin), (x, h - botmargin), 1)
         yspace = h / float(BOARD)
@@ -124,6 +129,7 @@ class Graphics(object):
             self.board.blit(fontimage, (8 - fw, y))
         # Draw the starpoints on the board
         if BOARD == 19:
+            print('19')
             starpoints = 3, 9, 15
             notpoints = ()
         elif BOARD == 9:

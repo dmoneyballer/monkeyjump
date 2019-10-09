@@ -30,7 +30,7 @@ class GoGrid(Control):
         self.BOARD = gridsize[0]
 
         gnugocmd = open(addpath(gnugoconf)).read().strip()
-        proc = subprocess.Popen(gnugocmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        proc = subprocess.Popen(gnugocmd, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
         self.to_gnugo, self.from_gnugo = proc.stdin, proc.stdout
         self._gtpnr = 1
         self.gridwidth = gridsize[0]
@@ -77,7 +77,8 @@ class GoGrid(Control):
         cmd = str(self._gtpnr) + " " + command
         if verbose:
             print(cmd)
-        self.to_gnugo.write(cmd + "\n")
+        self.to_gnugo.write(cmd.encode() + b'\n')
+        # self.to_gnugo.write('\n')
         self.to_gnugo.flush()
         status = self.from_gnugo.read(1)
         value = status
@@ -334,7 +335,7 @@ class GoGrid(Control):
         #w, h = self.getCellSize()
         # Clear
         self._graphics.clear(self._bgcolor)
-        # Pixels
+        # PixelsScreenshot from 2019-10-09 15-15-33
         for pos in list(self.pixels.keys()):
             sx, sy, sw, sh = self.getScreenRect(pos[0], pos[1])
 
