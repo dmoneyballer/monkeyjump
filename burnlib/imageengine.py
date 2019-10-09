@@ -103,6 +103,7 @@ class Graphics(object):
         yspace = h / float(BOARD)
         # one ynum per horizontal line
         for ynum in range(BOARD):
+            print(ynum)
             y = int(ynum * yspace) + margin
             pygame.draw.line(self.board, (0, 0, 0), (margin, y), (w - botmargin, y), 1)
         # Draw the letters on the board
@@ -133,6 +134,7 @@ class Graphics(object):
             starpoints = 3, 9, 15
             notpoints = ()
         elif BOARD == 9:
+            print('size 9')
             starpoints = 2, 4, 6
             notpoints = (2, 4), (4, 2), (6, 4), (4, 6)
         elif BOARD == 5:
@@ -151,9 +153,11 @@ class Graphics(object):
                     if (x, y) not in notpoints:
                         pos = (int(xspace * x) + margin, int(yspace * y) + margin)
                         pygame.draw.circle(self.board, (0, 0, 0), pos, 4, 0)
-
+        print('line 156')
         self.black = pygame.image.load(addpath(os.path.join(SPECIFIC_THEMEDIR, "black.png")))
+        print(self.black)
         self.white = pygame.image.load(addpath(os.path.join(SPECIFIC_THEMEDIR, "white.png")))
+        print(self.white)
 
     def refresh_screen(self):
         screen = pygame.display.get_surface()
@@ -161,6 +165,7 @@ class Graphics(object):
         pygame.display.update()
 
     def getSurf(self):
+        print(self.buffer)
         return self.buffer
 
     def show_surface(self, surface):
