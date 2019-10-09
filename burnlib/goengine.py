@@ -74,7 +74,7 @@ class GoGrid(Control):
         verbose = True
         cmd = str(self._gtpnr) + " " + command
         if verbose:
-            print cmd
+            print(cmd)
         self.to_gnugo.write(cmd + "\n")
         self.to_gnugo.flush()
         status = self.from_gnugo.read(1)
@@ -84,24 +84,24 @@ class GoGrid(Control):
             value += status
         assert(self.from_gnugo.read(1) == "\n")
         if verbose:
-            print value
+            print(value)
         self._gtpnr += 1
         return value[1 + len(str(self._gtpnr)):]
     
     def showboard(self):
         cmd = str(self._gtpnr) + " " + "showboard"
-        print cmd
+        print(cmd)
         self.to_gnugo.write(cmd + "\n")
         self.to_gnugo.flush()
         s = ""
         # y is not used, it's just a counter
-        for y in xrange(self.gridwidth + 4):
+        for y in range(self.gridwidth + 4):
             byte = self.from_gnugo.read(1)
             s += byte
             while not byte == "\n":
                 byte = self.from_gnugo.read(1)
                 s += byte
-        print s
+        print(s)
         self._gtpnr += 1
 
     def showlastmove(self):
@@ -159,7 +159,7 @@ class GoGrid(Control):
 
         # Check the size
         if (controlsize[0] < self._width) and (controlsize[1] < self._height):
-            print "Controlsize less than imagesize not implemented"
+            print("Controlsize less than imagesize not implemented")
             return
 
         # Re-initialize the graphics, deleting the screen-contents,
@@ -178,7 +178,7 @@ class GoGrid(Control):
         width, height = gridsize
         self._gridsize = gridsize
         if width > self.gfx_width or height > self.gfx_height:
-            print "Too small image compared to gridsize"
+            print("Too small image compared to gridsize")
             return False
         self._xmax = width - 1
         self._ymax = height - 1
@@ -187,7 +187,7 @@ class GoGrid(Control):
         self._cellwidth = (self.gfx_width / float(self._width))
         self._cellheight = (self.gfx_height / float(self._height))
         if (self._cellwidth <= 0) or (self._cellheight <= 0):
-            print "Size < 0 doesn't work very well with Pygame..."
+            print("Size < 0 doesn't work very well with Pygame...")
             return False
         if not (self._cellwidth % 2) and not (self._cellheight % 2):
             #print "Optimal size"
@@ -228,7 +228,7 @@ class GoGrid(Control):
         surfprops["BOARD"] = self.BOARD
         #print "getSurf BOARD", self.BOARD
         graphics = Graphics(**surfprops)
-        for pos, color in self.pixels.items():
+        for pos, color in list(self.pixels.items()):
             graphics.quickpixel(pos, color)
         return graphics.getSurf()
 
@@ -238,7 +238,7 @@ class GoGrid(Control):
     
     def save(self, fn, transp=False):
         """ Saves an image to a file """
-        print "Saving %s..." % fn
+        print("Saving %s..." % fn)
         ext = splitext(fn)[1].lower()
         if ext in [".bmp", ".tga"]:
             try:
@@ -247,9 +247,9 @@ class GoGrid(Control):
                 else:
                     pygame.image.save(self.getSurf(), fn)
             except pygame.error:
-                print "Pygame was unable to save (%s)." % fn
+                print("Pygame was unable to save (%s)." % fn)
         else:
-            print "Unknown file format (%s)." % ext
+            print("Unknown file format (%s)." % ext)
 
     def g2s(self, x, y):
         """ Gridspace to screenspace """
@@ -317,7 +317,7 @@ class GoGrid(Control):
         sx -= of
         sy -= of
         
-        if pos in self.pixels.keys():
+        if pos in list(self.pixels.keys()):
             # If the pixel exists, draw it with the color it has
             r, g, b, a = self.pixels[pos]
             #self._graphics.box(sx, sy, sw, sh, r, g, b, a)
@@ -333,7 +333,7 @@ class GoGrid(Control):
         # Clear
         self._graphics.clear(self._bgcolor)
         # Pixels
-        for pos in self.pixels.keys():
+        for pos in list(self.pixels.keys()):
             sx, sy, sw, sh = self.getScreenRect(pos[0], pos[1])
 
             # TEMPORARY (trial and error-based)
@@ -468,7 +468,7 @@ class GoGrid(Control):
         self.colorChanged()
 
     def pixelHere(self):
-        return (self._x, self._y) in self.pixels.keys()
+        return (self._x, self._y) in list(self.pixels.keys())
 
     def getHere(self):
         return self.get(self._x, self._y)
@@ -479,7 +479,7 @@ class GoGrid(Control):
             self.togglecolor(0, 0, 0)
             self.gnugo_gamelogic()
         elif self.illegal_ok:
-            print "Illegal move, but here you go."
+            print("Illegal move, but here you go.")
             self.togglecolor(0, 0, 0)
         else:
             return False
@@ -491,7 +491,7 @@ class GoGrid(Control):
             self.togglecolor(255, 255, 255)
             self.gnugo_gamelogic()
         elif self.illegal_ok:
-            print "Illegal move, but here you go."
+            print("Illegal move, but here you go.")
             self.togglecolor(255, 255, 255)
         else:
             return False
@@ -517,7 +517,7 @@ class GoGrid(Control):
     def status(self):
         self.showlastmove()
         self.gtp("estimate_score")
-        print "level", self._level
+        print("level", self._level)
 
     def nextlevel(self):
         self._level += 3 
@@ -532,7 +532,7 @@ class GoGrid(Control):
             self.myplay("black")
         else:
             self.gnugoblack()
-        print "level", self._level
+        print("level", self._level)
 
     def playblackorwhite(self, mode="", color="black"):
         if color == "black":
@@ -581,7 +581,7 @@ class GoGrid(Control):
         lines = []
         first = True
         cmd = str(self._gtpnr) + " " + cmd
-        print cmd
+        print(cmd)
         self.to_gnugo.write(cmd + "\n")
         self.to_gnugo.flush()
         neste = ""
@@ -593,7 +593,7 @@ class GoGrid(Control):
                 #lastbyte = byte
                 s += byte
                 byte = self.from_gnugo.read(1)
-            print s
+            print(s)
             if first:
                 s = s[2 + len(str(self._gtpnr)):]
                 first = False
@@ -619,7 +619,7 @@ class GoGrid(Control):
           (good for practicing tsumego)
         """
         if self.history:
-            self.next()
+            next(self)
         else:
             self.loadsgf()
 
@@ -641,15 +641,15 @@ class GoGrid(Control):
                     self.lastplayed = "B"
 
     def play100moves(self):
-        for x in xrange(100):
+        for x in range(100):
             self.myplay("black")
             self.refresh_now()
             self.gtp("estimate_score")
             self.gnugowhite()
             self.refresh_now()
-        print "Done with 100"
+        print("Done with 100")
 
-    def next(self):
+    def __next__(self):
         self.guesscounter = 0
         self.boardhistory[self.history_index] = self.pixels.copy()
         self.cursorhistory[self.history_index] = self._x, self._y
@@ -700,7 +700,7 @@ class GoGrid(Control):
                 #    print "Invalid token:", token
         #print sd
         # Refine the data
-        for key, value in sd.items():
+        for key, value in list(sd.items()):
             if len(value) == 1:
                 sd[key] = value[0]
             try:
@@ -732,21 +732,21 @@ class GoGrid(Control):
             self.filename = filename
         else:
             return
-        print "filename now", filename
+        print("filename now", filename)
         if filename.find("file:/") == 0:
             filename = filename[filename.find("/"):]
         self.fullclear()
         self.gtp("clear_board")
         sgfdata = open(filename).read().split(";")
         if not sgfdata[0].strip()[0] == "(":
-            print "Unable to load %s, because it doesn't start with '('"%(filename)
+            print("Unable to load %s, because it doesn't start with '('"%(filename))
             return
         if not sgfdata[-1].strip()[-1] == ")":
-            print "Unable to load %s, because it doesn't end with ')'"%(filename)
+            print("Unable to load %s, because it doesn't end with ')'"%(filename))
             return
         # Make the dictionary with the sgf-settings
         settings = self.settings2dict(sgfdata[1])
-        print "Settings", settings
+        print("Settings", settings)
 
         # TODO: A better check
         # Is "i" a position in the list of moves?
@@ -771,13 +771,13 @@ class GoGrid(Control):
                         self.sgfmove(move, precolor, withi)
 
         # Make a list of moves and remove whitespace
-        moves = map(lambda x:x.strip(), sgfdata[2:])
+        moves = [x.strip() for x in sgfdata[2:]]
         if moves:
             # Remove the ')' at the end of the last move
             try:
                 moves[-1] = moves[-1][:-1]
             except IndexError:
-                print "Unable to remove the ')' at the end. Oh well."
+                print("Unable to remove the ')' at the end. Oh well.")
         # is "i" a part of a move?
         # TODO: Better check for i or not
         if not withi:
@@ -813,7 +813,7 @@ class GoGrid(Control):
 
         self.drawAll()
         self.refresh_now()
-        print "Moves", self.history
+        print("Moves", self.history)
 
     def playguess(self):
         x, y = self.g2s(self._x, self._y)
@@ -828,26 +828,26 @@ class GoGrid(Control):
         guesspos = letter + str(number)
         if pos == guesspos:
             if self.guesscounter > 1:
-                print "You managed to guess the next move in", self.guesscounter, "clicks! :-)"
-            self.next()
+                print("You managed to guess the next move in", self.guesscounter, "clicks! :-)")
+            next(self)
         else:
             self.guesscounter += 1
 
     def mousepos(self, posx, posy):
-        self._x, self._y = map(int, self.s2g(posx, posy))
+        self._x, self._y = list(map(int, self.s2g(posx, posy)))
         self.cursorMoved()
 
     def savesgf(self, filename):
         self.gtp("printsgf " + filename)
 
     def liststones(self):
-        print self.gtp("list_stones black")
-        print self.gtp("list_stones white")
+        print(self.gtp("list_stones black"))
+        print(self.gtp("list_stones white"))
 
     def pixels2gnugo(self):
         self.gtp("clear_board")
-        for x in xrange(self.gridwidth):
-            for y in xrange(self.gridwidth):
+        for x in range(self.gridwidth):
+            for y in range(self.gridwidth):
                 if (x, y) in self.pixels:
                     letter = self._graphics.letters[x]
                     number = (y * -1) + self.gridwidth
@@ -927,7 +927,7 @@ class GoGrid(Control):
 
             if pos and (pos not in self.pixels):
                 gnugopos = self.convertpos(pos, "numpos", "gnugo")
-                print "My move :-),", gnugopos
+                print("My move :-),", gnugopos)
                 # The formula below uses "B" if black is True(1), and "W" if False(0)
                 self.playhere("B" * black + "W" * (not black), gnugopos)
                 pygame.event.clear()
@@ -988,8 +988,8 @@ class GoGrid(Control):
             #print "from sgf, xy:", (x, y)
 
         # This is good to have
-        assert(x in xrange(self.BOARD))
-        assert(y in xrange(self.BOARD))
+        assert(x in range(self.BOARD))
+        assert(y in range(self.BOARD))
 
         # Convert the xy-format to the correct output
         if totype == "numpos":
@@ -1020,7 +1020,7 @@ class GoGrid(Control):
         try:
             return int(self.gtp("countlib " + pos))
         except ValueError:
-            print "VALUEERROR", pos
+            print("VALUEERROR", pos)
 
     def gnugoinfo(self):
         self.gtp("name")
@@ -1037,8 +1037,8 @@ class GoGrid(Control):
         self.clear()
         b = lambda pos:self.playhere("B", pos)
         w = lambda pos:self.playhere("W", pos)
-        map(b, self.gtp("list_stones black").split())
-        map(w, self.gtp("list_stones white").split())
+        list(map(b, self.gtp("list_stones black").split()))
+        list(map(w, self.gtp("list_stones white").split()))
         self._x = x
         self._y = y
         self.cursorMoved()
