@@ -15,6 +15,7 @@ import os
 import pygame
 from pygame.locals import RLEACCEL
 from burnlib.common import addpath
+import subprocess
 
 class GoGrid(Control):
 
@@ -29,7 +30,8 @@ class GoGrid(Control):
         self.BOARD = gridsize[0]
 
         gnugocmd = open(addpath(gnugoconf)).read().strip()
-        self.to_gnugo, self.from_gnugo = os.popen2(gnugocmd)
+        proc = subprocess.Popen(gnugocmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        self.to_gnugo, self.from_gnugo = proc.stdin, proc.stdout
         self._gtpnr = 1
         self.gridwidth = gridsize[0]
         self.gtp("boardsize " + str(gridsize[0]))
